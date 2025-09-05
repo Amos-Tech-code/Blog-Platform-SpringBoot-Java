@@ -24,7 +24,6 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional
     public Category createCategory(Category category) {
         String categoryName = category.getName();
         if (categoryRepository.existsByNameIgnoreCase(categoryName)) {

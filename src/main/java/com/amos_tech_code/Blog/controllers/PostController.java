@@ -1,13 +1,16 @@
 package com.amos_tech_code.Blog.controllers;
 
 import com.amos_tech_code.Blog.domain.CreatePostRequest;
+import com.amos_tech_code.Blog.domain.UpdatePostRequest;
 import com.amos_tech_code.Blog.domain.dtos.CreatePostRequestDto;
 import com.amos_tech_code.Blog.domain.dtos.PostDto;
+import com.amos_tech_code.Blog.domain.dtos.UpdatePostRequestDto;
 import com.amos_tech_code.Blog.domain.entities.Post;
 import com.amos_tech_code.Blog.domain.entities.User;
 import com.amos_tech_code.Blog.mappers.PostMapper;
 import com.amos_tech_code.Blog.services.PostService;
 import com.amos_tech_code.Blog.services.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +27,16 @@ public class PostController {
     private final PostService postService;
     private final PostMapper postMapper;
     private final UserService userService;
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<PostDto> getPost(
+            @PathVariable UUID id
+    ) {
+        Post post = postService.getPost(id);
+        PostDto postDto = postMapper.toDto(post);
+
+        return ResponseEntity.ok(postDto);
+    }
 
     @GetMapping
     public ResponseEntity<List<PostDto>> getAllPosts(
@@ -49,7 +62,7 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<PostDto> createPost(
-            @RequestBody CreatePostRequestDto createPostRequestDto,
+            @Valid @RequestBody CreatePostRequestDto createPostRequestDto,
             @RequestAttribute UUID userId
             ) {
         User loggedInUser = userService.getUserById(userId);
@@ -59,4 +72,26 @@ public class PostController {
 
         return new ResponseEntity<>(createdPostDto, HttpStatus.CREATED);
     }
+
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<PostDto> updatePost(
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdatePostRequestDto updatePostRequestDto
+        ){
+        UpdatePostRequest updatePostRequest = postMapper.toUpdatePostRequest(updatePostRequestDto);
+        Post updatedPost = postService.updatePost(id, updatePostRequest);
+        PostDto updatedPostDto = postMapper.toDto(updatedPost);
+
+        return ResponseEntity.ok(updatedPostDto);
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Void> deletePost(
+            @PathVariable UUID id
+    ) {
+        postService.deletePost(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
 }

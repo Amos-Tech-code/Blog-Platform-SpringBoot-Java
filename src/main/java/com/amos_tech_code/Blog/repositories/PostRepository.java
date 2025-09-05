@@ -24,5 +24,4 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
 
     List<Post> findAllByAuthorAndStatus(User user, PostStatus status);
 
-
 }

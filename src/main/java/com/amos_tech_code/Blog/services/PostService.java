@@ -1,6 +1,7 @@
 package com.amos_tech_code.Blog.services;
 
 import com.amos_tech_code.Blog.domain.CreatePostRequest;
+import com.amos_tech_code.Blog.domain.UpdatePostRequest;
 import com.amos_tech_code.Blog.domain.entities.Post;
 import com.amos_tech_code.Blog.domain.entities.User;
 
@@ -14,5 +15,11 @@ public interface PostService {
     List<Post> getDraftPosts(User user);
 
     Post createPost(User user, CreatePostRequest createPostRequest);
+
+    Post updatePost(UUID id, UpdatePostRequest updatePostRequest);
+
+    Post getPost(UUID id);
+
+    void deletePost(UUID id);
 
 }
